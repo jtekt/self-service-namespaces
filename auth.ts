@@ -1,5 +1,4 @@
 import NextAuth, { type DefaultSession } from "next-auth";
-import Keycloak from "next-auth/providers/keycloak";
 
 declare module "next-auth" {
   interface Session {
@@ -10,13 +9,24 @@ declare module "next-auth" {
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  providers: [Keycloak],
+  providers: [
+    {
+      id: "oidc",
+      name: process.env.AUTH_OIDC_NAME || "SSO",
+      type: "oidc",
+      issuer: process.env.AUTH_OIDC_ISSUER,
+      clientId: process.env.AUTH_OIDC_ID,
+      clientSecret: process.env.AUTH_OIDC_SECRET,
+    },
+  ],
   trustHost: true,
   callbacks: {
     authorized: async ({ auth }) => !!auth?.user,
     async jwt({ token, account, profile }) {
       if (account && profile) {
-        token.preferredUsername = profile.preferred_username;
+        // Some IdPs emit preferred_username as a JSON number when it's a
+        // numeric ID; coerce to string so it's safe to use as a DNS label.
+        token.preferredUsername = String(profile.preferred_username);
       }
       return token;
     },

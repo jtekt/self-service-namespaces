@@ -14,10 +14,17 @@ function toDnsLabel(value: string): string {
 /**
  * Builds the standardized namespace prefix for a user.
  *
- * Format: <NAMESPACE_PREFIX>-<preferredUsername>-
+ * Format: <NAMESPACE_PREFIX>-<preferredUsername>-, with either segment
+ * omittable via ENFORCE_NAMESPACE_PREFIX / ENFORCE_USERNAME_PREFIX. This is
+ * purely a naming convention: ownership is enforced separately via an
+ * annotation on the namespace, not by parsing this prefix.
  */
 export function getNamespacePrefix(preferredUsername: string): string {
-  return `${Env.NAMESPACE_PREFIX}-${toDnsLabel(preferredUsername)}-`;
+  const segments: string[] = [];
+  if (Env.ENFORCE_NAMESPACE_PREFIX) segments.push(Env.NAMESPACE_PREFIX);
+  if (Env.ENFORCE_USERNAME_PREFIX) segments.push(toDnsLabel(preferredUsername));
+
+  return segments.length > 0 ? `${segments.join("-")}-` : "";
 }
 
 /**
