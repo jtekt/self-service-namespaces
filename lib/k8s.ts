@@ -3,7 +3,7 @@ import fs from "node:fs";
 import * as k8s from "@kubernetes/client-node";
 import { Env } from "./config";
 
-export const OWNER_ANNOTATION = "self-service-suite.io/owner";
+export const OWNER_ANNOTATION = "self-service-namespaces/owner";
 const SERVICE_ACCOUNT_NAME = "admin";
 const TOKEN_SECRET_SUFFIX = "-admin-token";
 const ADMIN_CLUSTER_ROLE = "admin"; // built-in Kubernetes ClusterRole
@@ -165,6 +165,34 @@ function buildKubeconfig(namespace: string, token: string): string {
 export interface ProvisionedNamespace {
   namespace: string;
   kubeconfig: string;
+}
+
+export async function listNamespacesForOwner(
+  owner: string,
+): Promise<k8s.V1Namespace[]> {
+  const { items } = await coreApi.listNamespace();
+  return items
+    .filter((ns) => ns.metadata?.annotations?.[OWNER_ANNOTATION] === owner)
+    .sort((a, b) => {
+      const aTime = a.metadata?.creationTimestamp?.getTime() ?? 0;
+      const bTime = b.metadata?.creationTimestamp?.getTime() ?? 0;
+      return bTime - aTime;
+    });
+}
+
+/** Rebuilds a kubeconfig for a namespace the caller already owns. */
+export async function getKubeconfigForNamespace(
+  namespace: string,
+  owner: string,
+): Promise<string> {
+  const existing = await getNamespace(namespace);
+  if (!existing || existing.metadata?.annotations?.[OWNER_ANNOTATION] !== owner) {
+    throw new Error("Namespace not found");
+  }
+
+  const secretName = `${SERVICE_ACCOUNT_NAME}${TOKEN_SECRET_SUFFIX}`;
+  const token = await waitForToken(namespace, secretName);
+  return buildKubeconfig(namespace, token);
 }
 
 /**

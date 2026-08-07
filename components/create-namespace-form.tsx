@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/input-group";
 import { Spinner } from "@/components/ui/spinner";
 import { createNamespace } from "@/lib/actions/namespaces";
+import { downloadKubeconfig } from "@/lib/blob-download";
 
 const formSchema = z.object({
   name: z
@@ -29,16 +30,6 @@ const formSchema = z.object({
       "Use lowercase letters, numbers, and hyphens only",
     ),
 });
-
-function downloadKubeconfig(namespace: string, kubeconfig: string) {
-  const blob = new Blob([kubeconfig], { type: "text/yaml" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = `${namespace}.kubeconfig.yaml`;
-  link.click();
-  URL.revokeObjectURL(url);
-}
 
 export function CreateNamespaceForm({
   namespacePrefix,

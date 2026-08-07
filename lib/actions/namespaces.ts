@@ -2,7 +2,11 @@
 
 import { z } from "zod";
 import { auth } from "@/auth";
-import { provisionNamespace, type ProvisionedNamespace } from "@/lib/k8s";
+import {
+  getKubeconfigForNamespace,
+  provisionNamespace,
+  type ProvisionedNamespace,
+} from "@/lib/k8s";
 import { getNamespaceName } from "@/lib/namespace";
 
 const nameSchema = z
@@ -38,6 +42,32 @@ export async function createNamespace(
     return { error: null, data };
   } catch (error: unknown) {
     console.error("Error provisioning namespace:", error);
+    const message =
+      error instanceof Error ? error.message : "An unexpected error occurred";
+    return { error: message, data: null };
+  }
+}
+
+export interface GetKubeconfigState {
+  error: string | null;
+  data: { kubeconfig: string } | null;
+}
+
+export async function getKubeconfig(
+  _: GetKubeconfigState | null,
+  namespace: string,
+): Promise<GetKubeconfigState> {
+  const session = await auth();
+  if (!session?.user) return { error: "Unauthorized", data: null };
+
+  try {
+    const kubeconfig = await getKubeconfigForNamespace(
+      namespace,
+      session.user.preferredUsername,
+    );
+    return { error: null, data: { kubeconfig } };
+  } catch (error: unknown) {
+    console.error("Error fetching kubeconfig:", error);
     const message =
       error instanceof Error ? error.message : "An unexpected error occurred";
     return { error: message, data: null };

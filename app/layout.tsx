@@ -1,5 +1,6 @@
 import { Geist_Mono, Inter } from "next/font/google"
 import type { Metadata } from "next"
+import Link from "next/link"
 import { Toaster } from "sonner"
 
 import "./globals.css"
@@ -36,7 +37,10 @@ export default async function RootLayout({
       <body>
         <ThemeProvider>
           {session && (
-            <header className="flex h-12 items-center justify-end gap-2 border-b px-4">
+            <header className="flex h-12 items-center gap-2 border-b px-4">
+              <Link href="/namespaces" className="mr-auto text-lg font-semibold">
+                Self-service namespaces
+              </Link>
               <SignOut />
             </header>
           )}
