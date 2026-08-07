@@ -38,6 +38,7 @@ export default async function NamespacesPage() {
             <Link
               key={ns.metadata!.name}
               href={`/namespaces/${ns.metadata!.name}`}
+              className="block"
             >
               <Card className="transition-colors hover:bg-accent/50">
                 <CardContent className="flex items-center justify-between gap-4">

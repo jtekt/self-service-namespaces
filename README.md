@@ -58,6 +58,19 @@ npm run lint
 npm run typecheck
 ```
 
+## Ownership
+
+Every namespace this app creates is annotated with `self-service-namespaces/owner`, holding a comma-separated list of usernames (the OIDC provider's `preferred_username`). Anyone listed has equal, full access to that namespace through the app — viewing it, downloading its kubeconfig, and deleting it.
+
+The app only ever writes a single username to this annotation on creation. To add a co-owner, edit the annotation directly:
+
+```bash
+kubectl annotate namespace <name> \
+  self-service-namespaces/owner=alice,bob --overwrite
+```
+
+There's no in-app UI for managing co-owners yet.
+
 ## Deployment
 
 Built as a standalone Next.js Docker image (`Dockerfile`, `output: "standalone"` in `next.config.ts`) and deployed to Kubernetes. See RBAC below for the permissions its own service account needs.

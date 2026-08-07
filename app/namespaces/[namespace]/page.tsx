@@ -5,7 +5,7 @@ import { DeleteNamespaceButton } from "@/components/delete-namespace-button";
 import { DownloadKubeconfigButton } from "@/components/download-kubeconfig-button";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { getNamespace, OWNER_ANNOTATION } from "@/lib/k8s";
+import { getNamespace, isOwner } from "@/lib/k8s";
 
 export const dynamic = "force-dynamic";
 
@@ -20,10 +20,7 @@ export default async function NamespacePage({
   const { namespace } = await params;
   const ns = await getNamespace(namespace);
 
-  if (
-    !ns ||
-    ns.metadata?.annotations?.[OWNER_ANNOTATION] !== session.user.preferredUsername
-  ) {
+  if (!ns || !isOwner(ns, session.user.preferredUsername)) {
     notFound();
   }
 

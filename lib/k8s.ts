@@ -19,6 +19,20 @@ function isApiException(error: unknown, code: number): boolean {
     : false;
 }
 
+/** The owner annotation holds a comma-separated list of usernames. */
+function getOwners(ns: k8s.V1Namespace): string[] {
+  const value = ns.metadata?.annotations?.[OWNER_ANNOTATION];
+  if (!value) return [];
+  return value
+    .split(",")
+    .map((owner) => owner.trim())
+    .filter(Boolean);
+}
+
+export function isOwner(ns: k8s.V1Namespace, owner: string): boolean {
+  return getOwners(ns).includes(owner);
+}
+
 export async function getNamespace(
   name: string,
 ): Promise<k8s.V1Namespace | undefined> {
@@ -172,7 +186,7 @@ export async function listNamespacesForOwner(
 ): Promise<k8s.V1Namespace[]> {
   const { items } = await coreApi.listNamespace();
   return items
-    .filter((ns) => ns.metadata?.annotations?.[OWNER_ANNOTATION] === owner)
+    .filter((ns) => isOwner(ns, owner))
     .sort((a, b) => {
       const aTime = a.metadata?.creationTimestamp?.getTime() ?? 0;
       const bTime = b.metadata?.creationTimestamp?.getTime() ?? 0;
@@ -186,7 +200,7 @@ export async function getKubeconfigForNamespace(
   owner: string,
 ): Promise<string> {
   const existing = await getNamespace(namespace);
-  if (!existing || existing.metadata?.annotations?.[OWNER_ANNOTATION] !== owner) {
+  if (!existing || !isOwner(existing, owner)) {
     throw new Error("Namespace not found");
   }
 
@@ -201,7 +215,7 @@ export async function deleteNamespaceForOwner(
   owner: string,
 ): Promise<void> {
   const existing = await getNamespace(namespace);
-  if (!existing || existing.metadata?.annotations?.[OWNER_ANNOTATION] !== owner) {
+  if (!existing || !isOwner(existing, owner)) {
     throw new Error("Namespace not found");
   }
 
@@ -219,7 +233,7 @@ export async function provisionNamespace(
 ): Promise<ProvisionedNamespace> {
   const existing = await getNamespace(name);
   if (existing) {
-    if (existing.metadata?.annotations?.[OWNER_ANNOTATION] !== owner) {
+    if (!isOwner(existing, owner)) {
       throw new Error("Namespace name already taken");
     }
   } else {

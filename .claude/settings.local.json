@@ -20,7 +20,8 @@
       "Bash(npm run *)",
       "Read(//mnt/c/Users/00174000/.kube/**)",
       "Bash(npx shadcn@latest add dialog --yes)",
-      "Bash(rm -rf .next)"
+      "Bash(rm -rf .next)",
+      "WebSearch"
     ]
   }
 }
