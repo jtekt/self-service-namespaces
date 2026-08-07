@@ -27,7 +27,7 @@ npm install
 npm run dev
 ```
 
-The app runs at http://localhost:3000. It talks to Kubernetes via `@kubernetes/client-node`'s default config resolution — it will use `KUBECONFIG` / `~/.kube/config` locally, or the in-cluster service account when deployed. The kubeconfig it generates for download reuses that same cluster's server address and CA certificate, so it must be reachable from wherever the downloaded kubeconfig will be used.
+The app runs at http://localhost:3000. It talks to Kubernetes via `@kubernetes/client-node`'s default config resolution — it will use `KUBECONFIG` / `~/.kube/config` locally, or the in-cluster service account when deployed. By default, the kubeconfig it generates for download reuses that same cluster's server address and CA certificate — but when deployed in-cluster, that address (e.g. `https://kubernetes.default.svc`) isn't reachable from outside the cluster. Set `K8S_API_SERVER_URL` (and `K8S_API_SERVER_CA` if the cluster's CA isn't otherwise trusted) to an externally-reachable address to fix this.
 
 ### Environment variables
 
@@ -43,6 +43,8 @@ The app runs at http://localhost:3000. It talks to Kubernetes via `@kubernetes/c
 | `ENFORCE_USERNAME_PREFIX` | Whether the caller's username is prepended to created namespace names (default `true`) |
 | `CLUSTER_NAME` | Name used for the cluster/context entries in generated kubeconfigs (default `self-service-cluster`) |
 | `KUBECONFIG` | Optional path to a kubeconfig file, for local development |
+| `K8S_API_SERVER_URL` | Overrides the server address embedded in generated kubeconfigs. Required in-cluster; leave unset locally |
+| `K8S_API_SERVER_CA` | Base64-encoded PEM CA cert to embed in generated kubeconfigs. Optional even when `K8S_API_SERVER_URL` is set — the CA is inferred from the loaded kubeconfig / in-cluster CA file by default, which is normally correct since the API server's cert is usually signed by that same CA regardless of address. Only set this if the external endpoint terminates TLS with a different certificate |
 
 ## Building & running
 

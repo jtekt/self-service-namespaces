@@ -149,12 +149,22 @@ async function waitForToken(namespace: string, secretName: string): Promise<stri
 
 function getClusterConnectionInfo(): { server: string; caData?: string } {
   const cluster = kc.getCurrentCluster();
-  if (!cluster) throw new Error("No current cluster in the loaded kubeconfig");
 
-  const caData = cluster.caData ?? (cluster.caFile
+  // The API server's certificate is normally signed by the same CA
+  // regardless of which address it's reached through, so infer it from the
+  // loaded kubeconfig (or in-cluster CA file) even when the server address
+  // itself is overridden. Only fall back further when there's no loaded
+  // cluster at all to infer from (e.g. K8S_API_SERVER_URL set without any
+  // local kubeconfig or in-cluster config present).
+  const caData = Env.K8S_API_SERVER_CA ?? cluster?.caData ?? (cluster?.caFile
     ? fs.readFileSync(cluster.caFile).toString("base64")
     : undefined);
 
+  if (Env.K8S_API_SERVER_URL) {
+    return { server: Env.K8S_API_SERVER_URL, caData };
+  }
+
+  if (!cluster) throw new Error("No current cluster in the loaded kubeconfig");
   return { server: cluster.server, caData };
 }
 
