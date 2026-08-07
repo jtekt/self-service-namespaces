@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//mnt/c/Users/00174000/dev/self-service-suite/**)",
+      "Bash(npm -v)",
+      "Bash(curl -v --max-time 10 https://nodejs.org/dist/index.json)",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(env)",
+      "Bash(curl -sS --max-time 8 -o /dev/null -w \"registry.npmjs.org: %{http_code} time=%{time_total}s\\\\n\" https://registry.npmjs.org/)",
+      "Bash(curl -sS --max-time 8 -o /dev/null -w \"github.com: %{http_code} time=%{time_total}s\\\\n\" https://github.com)",
+      "Bash(curl -sS --max-time 8 -o /dev/null -w \"archive.ubuntu.com: %{http_code} time=%{time_total}s\\\\n\" http://archive.ubuntu.com)",
+      "Bash(curl -sS --max-time 8 -o /dev/null -w \"deb.nodesource.com: %{http_code} time=%{time_total}s\\\\n\" https://deb.nodesource.com)",
+      "Bash(apt-cache policy *)",
+      "Bash(sudo -n true)",
+      "Read(//mnt/c/temp/**)",
+      "Bash(npx -v)",
+      "Bash(npm install *)",
+      "Bash(npx shadcn@latest add card field input label alert spinner --yes)",
+      "Bash(npx shadcn@latest add input-group --yes)",
+      "Bash(npm run *)",
+      "Read(//mnt/c/Users/00174000/.kube/**)"
+    ]
+  }
+}
