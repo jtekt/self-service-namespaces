@@ -18,7 +18,9 @@
       "Bash(npx shadcn@latest add card field input label alert spinner --yes)",
       "Bash(npx shadcn@latest add input-group --yes)",
       "Bash(npm run *)",
-      "Read(//mnt/c/Users/00174000/.kube/**)"
+      "Read(//mnt/c/Users/00174000/.kube/**)",
+      "Bash(npx shadcn@latest add dialog --yes)",
+      "Bash(rm -rf .next)"
     ]
   }
 }

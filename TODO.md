@@ -1,0 +1,3 @@
+- [ ] Make `self-service-ns` prefix optional, enforcement controled with environment variable
+- [ ] Make username prefix optional, enforcement controled with environment variable
+- [ ] Generic OIDC provider instead of Keycloak

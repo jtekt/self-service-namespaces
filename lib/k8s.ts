@@ -195,6 +195,19 @@ export async function getKubeconfigForNamespace(
   return buildKubeconfig(namespace, token);
 }
 
+/** Deletes a namespace the caller already owns. */
+export async function deleteNamespaceForOwner(
+  namespace: string,
+  owner: string,
+): Promise<void> {
+  const existing = await getNamespace(namespace);
+  if (!existing || existing.metadata?.annotations?.[OWNER_ANNOTATION] !== owner) {
+    throw new Error("Namespace not found");
+  }
+
+  await coreApi.deleteNamespace({ name: namespace });
+}
+
 /**
  * Creates (or reuses, if already owned by the same user) a namespace along
  * with a ServiceAccount that has namespace-scoped admin rights, and returns

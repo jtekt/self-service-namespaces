@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { auth } from "@/auth";
 import {
+  deleteNamespaceForOwner,
   getKubeconfigForNamespace,
   provisionNamespace,
   type ProvisionedNamespace,
@@ -42,6 +43,29 @@ export async function createNamespace(
     return { error: null, data };
   } catch (error: unknown) {
     console.error("Error provisioning namespace:", error);
+    const message =
+      error instanceof Error ? error.message : "An unexpected error occurred";
+    return { error: message, data: null };
+  }
+}
+
+export interface DeleteNamespaceState {
+  error: string | null;
+  data: { namespace: string } | null;
+}
+
+export async function deleteNamespace(
+  _: DeleteNamespaceState | null,
+  namespace: string,
+): Promise<DeleteNamespaceState> {
+  const session = await auth();
+  if (!session?.user) return { error: "Unauthorized", data: null };
+
+  try {
+    await deleteNamespaceForOwner(namespace, session.user.preferredUsername);
+    return { error: null, data: { namespace } };
+  } catch (error: unknown) {
+    console.error("Error deleting namespace:", error);
     const message =
       error instanceof Error ? error.message : "An unexpected error occurred";
     return { error: message, data: null };
