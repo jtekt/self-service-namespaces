@@ -7,7 +7,6 @@ import { toast } from "sonner";
 import * as z from "zod";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import {
   InputGroup,
@@ -55,63 +54,53 @@ export function CreateNamespaceForm({
 
   return (
     <div className="space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>Create a namespace</CardTitle>
-        </CardHeader>
+      <form id="create-namespace" onSubmit={form.handleSubmit(onSubmit)}>
+        <FieldGroup>
+          <Controller
+            name="name"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="name">Namespace name</FieldLabel>
 
-        <CardContent>
-          <form id="create-namespace" onSubmit={form.handleSubmit(onSubmit)}>
-            <FieldGroup>
-              <Controller
-                name="name"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="name">Namespace name</FieldLabel>
+                <InputGroup>
+                  <InputGroupAddon>
+                    <InputGroupText>{namespacePrefix}</InputGroupText>
+                  </InputGroupAddon>
 
-                    <InputGroup>
-                      <InputGroupAddon>
-                        <InputGroupText>{namespacePrefix}</InputGroupText>
-                      </InputGroupAddon>
+                  <InputGroupInput
+                    id="name"
+                    {...field}
+                    placeholder="my-project"
+                    disabled={pending}
+                    autoFocus
+                  />
+                </InputGroup>
 
-                      <InputGroupInput
-                        id="name"
-                        {...field}
-                        placeholder="my-project"
-                        disabled={pending}
-                        autoFocus
-                      />
-                    </InputGroup>
-
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
                 )}
-              />
-            </FieldGroup>
-          </form>
-        </CardContent>
-
-        <div className="p-4 pt-0">
-          <Button
-            type="submit"
-            form="create-namespace"
-            disabled={pending}
-            className="w-full"
-          >
-            {pending ? (
-              <span className="flex items-center gap-2">
-                <Spinner data-icon="inline-start" />
-                Creating namespace…
-              </span>
-            ) : (
-              "Create namespace"
+              </Field>
             )}
-          </Button>
-        </div>
-      </Card>
+          />
+        </FieldGroup>
+      </form>
+
+      <Button
+        type="submit"
+        form="create-namespace"
+        disabled={pending}
+        className="w-full"
+      >
+        {pending ? (
+          <span className="flex items-center gap-2">
+            <Spinner data-icon="inline-start" />
+            Creating namespace…
+          </span>
+        ) : (
+          "Create namespace"
+        )}
+      </Button>
 
       {!pending && state?.error && (
         <Alert variant="destructive">

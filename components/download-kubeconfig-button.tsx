@@ -1,6 +1,7 @@
 "use client";
 
 import { startTransition, useActionState, useEffect } from "react";
+import { DownloadIcon } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
@@ -18,12 +19,15 @@ export function DownloadKubeconfigButton({ namespace }: { namespace: string }) {
   return (
     <Button
       type="button"
-      variant="outline"
-      size="sm"
       disabled={pending}
       onClick={() => startTransition(() => action(namespace))}
     >
-      {pending ? <Spinner /> : "Download kubeconfig"}
+      {pending ? (
+        <Spinner data-icon="inline-start" />
+      ) : (
+        <DownloadIcon data-icon="inline-start" />
+      )}
+      Download kubeconfig
     </Button>
   );
 }

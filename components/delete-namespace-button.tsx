@@ -35,10 +35,9 @@ export function DeleteNamespaceButton({ namespace }: { namespace: string }) {
 
   return (
     <Dialog open={open && !state?.data} onOpenChange={setOpen}>
-      <DialogTrigger
-        render={<Button variant="destructive" aria-label="Delete namespace" />}
-      >
-        <Trash2Icon />
+      <DialogTrigger render={<Button variant="destructive" size="sm" />}>
+        <Trash2Icon data-icon="inline-start" />
+        Delete
       </DialogTrigger>
 
       <DialogContent className="space-y-2">
