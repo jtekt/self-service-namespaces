@@ -214,7 +214,12 @@ export async function getKubeconfigForNamespace(
     throw new Error("Namespace not found");
   }
 
-  const secretName = `${SERVICE_ACCOUNT_NAME}${TOKEN_SECRET_SUFFIX}`;
+  // The namespace may have been created outside this app (or before this
+  // app provisioned the ServiceAccount/RoleBinding/Secret), so ensure the
+  // RBAC scaffolding exists rather than assuming it does.
+  await ensureServiceAccount(namespace);
+  await ensureRoleBinding(namespace);
+  const secretName = await ensureTokenSecret(namespace);
   const token = await waitForToken(namespace, secretName);
   return buildKubeconfig(namespace, token);
 }

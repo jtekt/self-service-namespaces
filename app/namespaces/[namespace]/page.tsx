@@ -4,7 +4,6 @@ import { auth } from "@/auth";
 import { DeleteNamespaceButton } from "@/components/delete-namespace-button";
 import { DownloadKubeconfigButton } from "@/components/download-kubeconfig-button";
 import { buttonVariants } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { getNamespace, isOwner } from "@/lib/k8s";
 
 export const dynamic = "force-dynamic";
@@ -31,16 +30,14 @@ export default async function NamespacePage({
         <DeleteNamespaceButton namespace={namespace} />
       </div>
 
-      <Card>
-        <CardContent className="space-y-4">
-          {ns.metadata?.creationTimestamp && (
-            <p className="text-sm text-muted-foreground">
-              Created {new Date(ns.metadata.creationTimestamp).toLocaleString()}
-            </p>
-          )}
-          <DownloadKubeconfigButton namespace={namespace} />
-        </CardContent>
-      </Card>
+      <div className="flex items-center justify-between gap-4">
+        {ns.metadata?.creationTimestamp && (
+          <p className="text-sm text-muted-foreground">
+            Created {new Date(ns.metadata.creationTimestamp).toLocaleString()}
+          </p>
+        )}
+        <DownloadKubeconfigButton namespace={namespace} />
+      </div>
 
       <div className="text-center">
         <Link href="/namespaces" className={buttonVariants({ variant: "ghost" })}>
