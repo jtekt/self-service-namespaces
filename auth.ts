@@ -17,6 +17,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       issuer: process.env.AUTH_OIDC_ISSUER,
       clientId: process.env.AUTH_OIDC_ID,
       clientSecret: process.env.AUTH_OIDC_SECRET,
+      // The default sign-in page derives a logo URL from the provider id
+      // (https://authjs.dev/img/providers/<id>.svg), which 404s for a generic
+      // "oidc" id since it isn't a known vendor slug. Point at a local icon instead.
+      style: { logo: "/oidc.svg", bg: "#fff" },
     },
   ],
   trustHost: true,
