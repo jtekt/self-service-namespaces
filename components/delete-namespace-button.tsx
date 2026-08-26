@@ -30,6 +30,7 @@ export function DeleteNamespaceButton({ namespace }: { namespace: string }) {
     if (state?.data) {
       toast.success(`Namespace "${namespace}" was deleted.`);
       router.push("/namespaces");
+      router.refresh();
     }
   }, [state, router, namespace]);
 

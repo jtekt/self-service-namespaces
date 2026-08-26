@@ -196,7 +196,7 @@ export async function listNamespacesForOwner(
 ): Promise<k8s.V1Namespace[]> {
   const { items } = await coreApi.listNamespace();
   return items
-    .filter((ns) => isOwner(ns, owner))
+    .filter((ns) => isOwner(ns, owner) && !ns.metadata?.deletionTimestamp)
     .sort((a, b) => {
       const aTime = a.metadata?.creationTimestamp?.getTime() ?? 0;
       const bTime = b.metadata?.creationTimestamp?.getTime() ?? 0;

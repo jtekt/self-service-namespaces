@@ -18,7 +18,11 @@ export default async function NamespacePage({
   const { namespace } = await params;
   const ns = await getNamespace(namespace);
 
-  if (!ns || !isOwner(ns, session.user.preferredUsername)) {
+  if (
+    !ns ||
+    !isOwner(ns, session.user.preferredUsername) ||
+    ns.metadata?.deletionTimestamp
+  ) {
     notFound();
   }
 
