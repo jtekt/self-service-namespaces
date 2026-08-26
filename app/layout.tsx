@@ -7,9 +7,9 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { SignOut } from "@/components/signout-button"
 import { auth } from "@/auth"
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'})
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 
 const fontMono = Geist_Mono({
   subsets: ["latin"],
@@ -19,6 +19,9 @@ const fontMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Self-service namespaces",
   description: "Self-provision a Kubernetes namespace",
+  icons: {
+    icon: "/icon.png",
+  },
 }
 
 export default async function RootLayout({
@@ -32,13 +35,21 @@ export default async function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", inter.variable)}
+      className={cn(
+        "antialiased",
+        fontMono.variable,
+        "font-sans",
+        inter.variable
+      )}
     >
       <body>
         <ThemeProvider>
           {session && (
             <header className="flex h-12 items-center gap-2 border-b px-4">
-              <Link href="/namespaces" className="mr-auto text-lg font-semibold">
+              <Link
+                href="/namespaces"
+                className="mr-auto text-lg font-semibold"
+              >
                 Self-service namespaces
               </Link>
               <SignOut />
