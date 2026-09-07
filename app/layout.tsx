@@ -19,9 +19,6 @@ const fontMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Self-service namespaces",
   description: "Self-provision a Kubernetes namespace",
-  icons: {
-    icon: "/icon.png",
-  },
 }
 
 export default async function RootLayout({
