@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic"
 
 export default async function NamespacesPage() {
   const session = await auth()
-  if (!session) redirect("/api/auth/signin")
+  if (!session) redirect("/login")
 
   const namespaces = await listNamespacesForOwner(
     session.user.preferredUsername
