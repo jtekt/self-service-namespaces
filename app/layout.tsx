@@ -8,6 +8,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { ModeToggle } from "@/components/toggle-mode"
 import { HelpLink } from "@/components/help-link"
 import { SignOut } from "@/components/signout-button"
+import { AppIcon } from "@/components/app-icon"
 import { auth } from "@/auth"
 import { cn } from "@/lib/utils"
 
@@ -44,7 +45,11 @@ export default async function RootLayout({
       <body className="flex min-h-screen flex-col">
         <ThemeProvider>
           <header className="flex h-12 items-center gap-2 border-b px-4">
-            <Link href="/" className="mr-auto text-base font-semibold">
+            <Link
+              href="/"
+              className="mr-auto flex items-center gap-2 text-base font-semibold"
+            >
+              <AppIcon className="size-5 shrink-0" />
               Self-Service Namespaces
             </Link>
             <ModeToggle />
