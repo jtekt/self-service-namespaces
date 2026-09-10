@@ -1,7 +1,7 @@
 import "server-only";
 import fs from "node:fs";
 import * as k8s from "@kubernetes/client-node";
-import { Env } from "./config";
+import { Env } from "@/config";
 
 export const OWNER_ANNOTATION = "self-service-namespaces/owner";
 const SERVICE_ACCOUNT_NAME = "admin";

@@ -1,5 +1,5 @@
 import "server-only";
-import { Env } from "./config";
+import { Env } from "@/config";
 
 const DNS_LABEL_MAX_LENGTH = 63;
 
