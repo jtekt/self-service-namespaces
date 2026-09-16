@@ -1,0 +1,109 @@
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: self-service-namespaces
+spec:
+  refreshInterval: 5m0s
+  secretStoreRef:
+    name: aws-secrets-manager
+    kind: ClusterSecretStore
+  dataFrom:
+    - extract:
+        key: eks/ssc/eso/self-service-namespaces
+  target:
+    name: self-service-namespaces-es
+    creationPolicy: Orphan
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: self-service-namespaces
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: self-service-namespaces
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: self-service-namespaces
+    spec:
+      serviceAccountName: self-service-namespaces
+      containers:
+        - name: self-service-namespaces
+          image: ${CONTAINER_IMAGE_TAGGED}
+          env:
+
+            - name: NAMESPACE_PREFIX
+              value: self-service-ns
+            - name: CLUSTER_NAME
+              value: ssc
+            - name: ENFORCE_NAMESPACE_PREFIX
+              value: "false"
+            - name: ENFORCE_USERNAME_PREFIX
+              value: "false"
+            - name: K8S_API_SERVER_URL
+              value: https://EB1C33CB42DD582BCCBCF6FF5CDE204E.yl4.ap-northeast-1.eks.amazonaws.com
+
+
+
+            # Auth.js
+            - name: AUTH_OIDC_ID
+              value: public
+            - name: AUTH_OIDC_ISSUER
+              value: https://keycloak.eks.jtektrnd.net/realms/jtekt
+            - name: AUTH_URL
+              value: https://self-service-namespaces.ssc.jtektrnd.net/
+            - name: AUTH_TRUST_HOST
+              value: "true"
+
+          envFrom:
+            - secretRef:
+                name: self-service-namespaces-es
+          resources:
+            requests:
+              memory: "100Mi"
+              cpu: "10m"
+            limits:
+              memory: "500Mi"
+              cpu: "300m"
+      imagePullSecrets:
+        - name: ecr-credentials
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: self-service-namespaces
+spec:
+  ports:
+    - port: 3000
+  selector:
+    app.kubernetes.io/name: self-service-namespaces
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: self-service-namespaces
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: Self-Service Suite
+    gethomepage.dev/name: Self-Service Namespaces
+    gethomepage.dev/description: Allows users to create Kubernetes namespaces on their own
+    gethomepage.dev/icon: https://gitlab.jtektrnd.net/uploads/-/system/project/avatar/4830/self-service-namespaces.png
+spec:
+  rules:
+  - host: self-service-namespaces.ssc.jtektrnd.net
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: self-service-namespaces
+            port:
+              number: 3000
