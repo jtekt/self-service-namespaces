@@ -7,6 +7,7 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { ModeToggle } from "@/components/toggle-mode"
 import { HelpLink } from "@/components/help-link"
+import { AppsLink } from "@/components/apps-link"
 import { SignOut } from "@/components/signout-button"
 import { AppIcon } from "@/components/app-icon"
 import { auth } from "@/auth"
@@ -53,6 +54,7 @@ export default async function RootLayout({
               Self-Service Namespaces
             </Link>
             <ModeToggle />
+            <AppsLink />
             <HelpLink />
             {session && <SignOut />}
           </header>
