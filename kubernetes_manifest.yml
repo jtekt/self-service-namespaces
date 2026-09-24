@@ -36,7 +36,6 @@ spec:
         - name: self-service-namespaces
           image: ${CONTAINER_IMAGE_TAGGED}
           env:
-
             - name: NAMESPACE_PREFIX
               value: self-service-ns
             - name: CLUSTER_NAME
@@ -49,8 +48,6 @@ spec:
               value: https://EB1C33CB42DD582BCCBCF6FF5CDE204E.yl4.ap-northeast-1.eks.amazonaws.com
             - name: NEXT_PUBLIC_APPS_URL
               value: https://homepage.ssc.jtektrnd.net
-
-
 
             # Auth.js
             - name: AUTH_OIDC_ID
@@ -96,19 +93,19 @@ metadata:
     gethomepage.dev/group: Self-Service Suite
     gethomepage.dev/name: Self-Service Namespaces
     gethomepage.dev/description: Allows users to create Kubernetes namespaces on their own
-    gethomepage.dev/icon: https://gitlab.jtektrnd.net/uploads/-/system/project/avatar/4830/self-service-namespaces.png
+    gethomepage.dev/icon: https://raw.githubusercontent.com/jtekt/self-service-namespaces/master/app/icon.png
 spec:
   rules:
-  - host: self-service-namespaces.ssc.jtektrnd.net
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: self-service-namespaces
-            port:
-              number: 3000
+    - host: self-service-namespaces.ssc.jtektrnd.net
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: self-service-namespaces
+                port:
+                  number: 3000
 ---
 apiVersion: v1
 kind: ServiceAccount
