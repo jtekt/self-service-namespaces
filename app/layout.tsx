@@ -58,9 +58,12 @@ export default async function RootLayout({
             <HelpLink />
             {session && <SignOut />}
           </header>
-          <main className="mx-auto w-full max-w-3xl flex-1 p-4">{children}</main>
+          <main className="mx-auto w-full max-w-3xl flex-1 p-4">
+            {children}
+          </main>
           <footer className="border-t p-4 text-center text-sm">
-            Self-Service Namespaces | JTEKT Corporation
+            Self-Service Namespaces | JTEKT Corporation |{" "}
+            {process.env.NEXT_PUBLIC_APP_VERSION ?? "dev"}
           </footer>
           <Toaster richColors />
         </ThemeProvider>

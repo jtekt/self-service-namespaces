@@ -19,6 +19,10 @@ COPY . .
 # Learn more here: https://nextjs.org/telemetry
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# The git tag, passed in by CI; shown in the footer
+ARG APP_VERSION=dev
+ENV NEXT_PUBLIC_APP_VERSION=$APP_VERSION
+
 RUN npm run build
 
 # Production image, copy all the files and run next
