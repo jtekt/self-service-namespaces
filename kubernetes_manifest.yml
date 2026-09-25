@@ -153,3 +153,18 @@ roleRef:
   kind: ClusterRole
   name: self-service-namespaces
   apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: self-service-namespaces
+spec:
+  parentRefs:
+    - name: eg
+      namespace: envoy-gateway-system
+  hostnames:
+    - self-service-namespaces.ssc.jtektrnd.net
+  rules:
+    - backendRefs:
+        - name: self-service-namespaces
+          port: 3000
