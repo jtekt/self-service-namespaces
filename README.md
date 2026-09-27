@@ -38,6 +38,8 @@ The app runs at http://localhost:3000. It talks to Kubernetes via `@kubernetes/c
 | `AUTH_OIDC_ISSUER` | OIDC issuer URL (must serve `/.well-known/openid-configuration`) |
 | `AUTH_OIDC_NAME` | Display name for the sign-in button (default `SSO`) |
 | `AUTH_SECRET` | Secret used by Auth.js to sign session tokens |
+| `AUTH_URL` | Public URL of this app (used for OAuth callbacks) |
+| `AUTH_TRUST_HOST` | Set to `true` behind a reverse proxy / ingress |
 | `NAMESPACE_PREFIX` | Prefix for created namespaces (default `self-service-ns`) |
 | `ENFORCE_NAMESPACE_PREFIX` | Whether `NAMESPACE_PREFIX` is prepended to created namespace names (default `true`) |
 | `ENFORCE_USERNAME_PREFIX` | Whether the caller's username is prepended to created namespace names (default `true`) |
@@ -45,6 +47,8 @@ The app runs at http://localhost:3000. It talks to Kubernetes via `@kubernetes/c
 | `KUBECONFIG` | Optional path to a kubeconfig file, for local development |
 | `K8S_API_SERVER_URL` | Overrides the server address embedded in generated kubeconfigs. Required in-cluster; leave unset locally |
 | `K8S_API_SERVER_CA` | Base64-encoded PEM CA cert to embed in generated kubeconfigs. Optional even when `K8S_API_SERVER_URL` is set — the CA is inferred from the loaded kubeconfig / in-cluster CA file by default, which is normally correct since the API server's cert is usually signed by that same CA regardless of address. Only set this if the external endpoint terminates TLS with a different certificate |
+| `NEXT_PUBLIC_HELP_URL` | Optional help link shown in the header |
+| `NEXT_PUBLIC_APPS_URL` | Optional link to the apps portal shown in the header |
 
 ## Building & running
 
@@ -75,7 +79,7 @@ There's no in-app UI for managing co-owners yet.
 
 ## Deployment
 
-Built as a standalone Next.js Docker image (`Dockerfile`, `output: "standalone"` in `next.config.ts`) and deployed to Kubernetes. See RBAC below for the permissions its own service account needs.
+Built as a standalone Next.js Docker image (`Dockerfile`, `output: "standalone"` in `next.config.ts`). A release is a `vX.Y.Z` tag on `master`. GitLab CI (`.gitlab-ci.yml`) pushes the image to public ECR as [`public.ecr.aws/jtekt-corporation/self-service-namespaces`](https://gallery.ecr.aws/jtekt-corporation/self-service-namespaces) (`:<tag>` and `:latest`) and applies `kubernetes_manifest.yml` to the cluster. Pushing `master` without a tag deploys nothing. See RBAC below for the permissions its own service account needs.
 
 ## RBAC
 
