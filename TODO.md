@@ -1,3 +1,4 @@
 - [ ] Make `self-service-ns` prefix optional, enforcement controled with environment variable
 - [ ] Make username prefix optional, enforcement controled with environment variable
 - [ ] Generic OIDC provider instead of Keycloak
+- [ ] Let owners add and remove co-owners in the app. Co-owners live in the namespace's `self-service-namespaces/owner` annotation (comma-separated usernames), which only `kubectl annotate` can change today. The kubeconfig the app hands out is bound to the `admin` ClusterRole, which by default can't patch the namespace object itself, so users can't edit it themselves (check with `kubectl auth can-i patch namespace/<ns> --kubeconfig <downloaded kubeconfig>`). The app's own ServiceAccount would need `patch` on namespaces.
