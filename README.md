@@ -140,6 +140,21 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 ```
 
+The provisioned ServiceAccounts get the built-in `admin` ClusterRole, which doesn't cover Gateway API resources. `kubernetes_manifest.yml` extends it with an aggregated ClusterRole so users can also manage `HTTPRoute`s in their namespaces:
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: self-service-namespaces-aggregate-to-admin
+  labels:
+    rbac.authorization.k8s.io/aggregate-to-admin: "true"
+rules:
+  - apiGroups: ["gateway.networking.k8s.io"]
+    resources: ["httproutes"]
+    verbs: ["create", "delete", "deletecollection", "get", "list", "patch", "update", "watch"]
+```
+
 Set `serviceAccountName: self-service-namespaces` on the app's own pod spec so `@kubernetes/client-node`'s in-cluster config resolution picks it up.
 
 ## Development references

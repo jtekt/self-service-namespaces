@@ -154,6 +154,19 @@ roleRef:
   name: self-service-namespaces
   apiGroup: rbac.authorization.k8s.io
 ---
+# Aggregated into the built-in "admin" ClusterRole, which the provisioned
+# ServiceAccounts are bound to, so users can manage HTTPRoutes in their namespaces
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: self-service-namespaces-aggregate-to-admin
+  labels:
+    rbac.authorization.k8s.io/aggregate-to-admin: "true"
+rules:
+  - apiGroups: ["gateway.networking.k8s.io"]
+    resources: ["httproutes"]
+    verbs: ["create", "delete", "deletecollection", "get", "list", "patch", "update", "watch"]
+---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
